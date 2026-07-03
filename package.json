@@ -1,0 +1,19 @@
+{
+  "name": "invoiceflow-qa-showcase",
+  "version": "1.0.0",
+  "private": true,
+  "description": "E2E test automation showcase for a B2B subscription billing platform — built with Playwright + TypeScript.",
+  "scripts": {
+    "start": "node app/server.js",
+    "test:e2e": "playwright test",
+    "test:report": "playwright show-report"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.47.0",
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.4"
+  }
+}

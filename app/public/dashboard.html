@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>InvoiceFlow — Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <span class="brand">InvoiceFlow</span>
+    <span id="user-name" data-testid="user-name"></span>
+  </header>
+  <main>
+    <div class="card">
+      <h2>Customers &amp; plan upgrades</h2>
+      <table>
+        <thead><tr><th>Customer</th><th>Plan</th><th>Action</th></tr></thead>
+        <tbody id="customers-body" data-testid="customers-body"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>New invoice</h2>
+      <form id="invoice-form">
+        <label for="customer-select">Customer</label>
+        <select id="customer-select" data-testid="invoice-customer"></select>
+
+        <div class="line-item-row">
+          <div><label>Description</label><input id="li-desc" data-testid="line-item-desc" value="Consulting services" /></div>
+          <div><label>Qty</label><input id="li-qty" type="number" data-testid="line-item-qty" value="1" /></div>
+          <div><label>Unit price</label><input id="li-price" type="number" data-testid="line-item-price" value="500" /></div>
+        </div>
+
+        <label for="percent-discount">Discount (%)</label>
+        <input id="percent-discount" type="number" data-testid="invoice-percent-discount" value="0" />
+        <label for="flat-discount">Flat discount ($)</label>
+        <input id="flat-discount" type="number" data-testid="invoice-flat-discount" value="0" />
+        <label for="tax-rate">Tax rate (%)</label>
+        <input id="tax-rate" type="number" data-testid="invoice-tax-rate" value="8" />
+
+        <button type="submit" data-testid="create-invoice-submit">Create invoice</button>
+        <div class="error" id="invoice-error" data-testid="invoice-error"></div>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Invoices</h2>
+      <table>
+        <thead><tr><th>ID</th><th>Customer</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="invoices-body" data-testid="invoices-body"></tbody>
+      </table>
+    </div>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
