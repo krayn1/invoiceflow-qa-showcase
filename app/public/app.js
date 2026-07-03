@@ -123,13 +123,18 @@ if (customersBody) {
     });
   }
 
-  // BUG (seeded for the E2E showcase — see tests/e2e/duplicate-invoice.spec.ts):
-  // the submit button is never disabled while the request is in flight, so a
-  // fast double-click (or a slow network) fires two POST /api/invoices calls
-  // and creates two identical invoices for the same order.
+  // FIXED (was missing a re-entrancy guard — see BUGS_FOUND.md #3): the
+  // submit button now disables itself and a flag blocks overlapping
+  // submits, so a fast double-click can no longer create two invoices.
   const invoiceForm = document.getElementById("invoice-form");
+  const createInvoiceBtn = document.querySelector('[data-testid="create-invoice-submit"]');
+  let isSubmittingInvoice = false;
   invoiceForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (isSubmittingInvoice) return;
+    isSubmittingInvoice = true;
+    createInvoiceBtn.disabled = true;
+
     const errorEl = document.getElementById("invoice-error");
     errorEl.textContent = "";
     const payload = {
@@ -148,6 +153,9 @@ if (customersBody) {
       await refreshInvoices();
     } catch (err) {
       errorEl.textContent = err.message;
+    } finally {
+      isSubmittingInvoice = false;
+      createInvoiceBtn.disabled = false;
     }
   });
 

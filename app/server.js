@@ -90,12 +90,10 @@ app.post("/api/customers/:id/upgrade", requireAuth, (req, res) => {
   const month = now.getMonth();
   const dayOfMonth = now.getDate();
 
-  // BUG (intentionally seeded for the E2E showcase — see tests/e2e/proration-billing.spec.ts):
-  // proration divides by a hardcoded 30-day month instead of the actual
-  // number of days in the current billing month. This silently mis-bills
-  // any customer whose cycle spans a month that isn't exactly 30 days
-  // (i.e. every month except April, June, September, November).
-  const totalDaysInCycle = 30;
+  // FIXED (was hardcoded to 30 — see BUGS_FOUND.md #1): prorate against the
+  // actual number of days in the current billing month so cycles that
+  // aren't exactly 30 days (8 of 12 months) bill correctly.
+  const totalDaysInCycle = daysInMonth(year, month);
   const daysRemaining = totalDaysInCycle - dayOfMonth + 1;
 
   const oldPlanDailyRate = oldPlan.priceMonthly / totalDaysInCycle;
@@ -125,11 +123,9 @@ function computeInvoiceTotals({ lineItems, percentDiscount = 0, flatDiscount = 0
   const subtotal = lineItems.reduce((sum, li) => sum + li.qty * li.unitPrice, 0);
   const afterPercent = subtotal - subtotal * (percentDiscount / 100);
   const afterDiscount = Math.max(0, afterPercent - flatDiscount);
-  // BUG (intentionally seeded for the E2E showcase — see tests/e2e/discount-tax.spec.ts):
-  // tax is calculated against the pre-discount subtotal instead of the
-  // post-discount amount, silently over-collecting tax on every discounted
-  // invoice — a compliance/refund liability, not just a rounding error.
-  const tax = +(subtotal * (taxRate / 100)).toFixed(2);
+  // FIXED (was taxing the pre-discount subtotal — see BUGS_FOUND.md #2):
+  // tax is now computed on what the customer actually owes, post-discount.
+  const tax = +(afterDiscount * (taxRate / 100)).toFixed(2);
   const total = +(afterDiscount + tax).toFixed(2);
   return { subtotal: +subtotal.toFixed(2), tax, total };
 }
