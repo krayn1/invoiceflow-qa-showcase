@@ -76,5 +76,5 @@ HTML report as a downloadable artifact.
 ## Contact
 
 Open to freelance/contract QA automation, full-stack development, and
-backend/API automation work. See [my portfolio](#) for more projects and
+backend/API automation work. See [my portfoliohttps://krayn1.github.io/ for more projects and
 ways to get in touch.
